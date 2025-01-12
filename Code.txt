@@ -1,0 +1,78 @@
+// Rastgele süre aralığı (ms cinsinden)
+const minInterval = 10000; // Minimum 10 saniye
+const maxInterval = 30000; // Maksimum 30 saniye
+
+// Mesaj sayacı ve rastgele süre
+let messageCount = 0;
+let randomMessageInterval = Math.floor(Math.random() * (maxInterval - minInterval + 1)) + minInterval;
+let randomAsInterval = Math.floor(Math.random() * (30 - 20 + 1)) + 20; // 20 ile 30 arasında rastgele bir değer
+
+// Rastgele emoji ve "as" gönderme işlemi
+function sendRandomEmoji() {
+    // Sayfadaki tüm emojileri seç
+    const emojiElements = document.querySelectorAll('img[alt^="emoji"]');
+    
+    if (emojiElements.length > 0) {
+        // Rastgele bir emoji seç
+        const randomIndex = Math.floor(Math.random() * emojiElements.length);
+        const randomEmoji = emojiElements[randomIndex];
+
+        // Mesaj sayacını arttır
+        messageCount++;
+
+        // Eğer mesaj sayısı belirlenen aralığa ulaştıysa "as" yaz
+        if (messageCount === randomAsInterval) {
+            // "as" yaz
+            const chatInput = document.querySelector('div[data-input="true"]');
+            if (chatInput) {
+                chatInput.textContent = "as"; // 'as' yaz
+                const event = new KeyboardEvent("keydown", {
+                    key: "Enter",
+                    code: "Enter",
+                    keyCode: 13,
+                    which: 13,
+                    bubbles: true,
+                });
+                chatInput.dispatchEvent(event);
+                console.log('"as" mesajı gönderildi!');
+            }
+
+            // Sayaç sıfırla ve yeni bir rastgele interval seç
+            messageCount = 0;
+            randomAsInterval = Math.floor(Math.random() * (30 - 20 + 1)) + 20; // Yeni rastgele interval
+            console.log(`Yeni rastgele "as" aralığı: ${randomAsInterval} mesaj`);
+        } else {
+            // Emojiyi tıkla
+			console.log(`Mesaj sayısı: ${messageCount}`);
+            randomEmoji.click();
+            console.log(`Gönderilen emoji: ${randomEmoji.alt}`);
+
+            // Enter tuşunu tetikle
+            const chatInput = document.querySelector('div[data-input="true"]');
+            if (chatInput) {
+                const event = new KeyboardEvent("keydown", {
+                    key: "Enter",
+                    code: "Enter",
+                    keyCode: 13,
+                    which: 13,
+                    bubbles: true,
+                });
+                chatInput.dispatchEvent(event);
+                console.log("Enter tuşu gönderildi!");
+            } else {
+                console.warn("Sohbet kutusu bulunamadı!");
+            }
+        }
+
+        // Bir sonraki gönderim için rastgele süre belirle
+        const randomDelay = Math.floor(Math.random() * (maxInterval - minInterval + 1)) + minInterval;
+        console.log(`Sonraki gönderim ${randomDelay / 1000} saniye sonra.`);
+        setTimeout(sendRandomEmoji, randomDelay);
+    } else {
+        console.warn("Hiç emoji bulunamadı!");
+    }
+}
+
+// İlk gönderimi başlat
+console.log("Otomatik rastgele emoji gönderici başlatıldı!");
+sendRandomEmoji();
